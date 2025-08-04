@@ -41,9 +41,10 @@ let AuthService = class AuthService {
             role: user.role,
         };
         const token = this.jwtService.sign(payload);
+        const { password: _, ...userWithoutPassword } = user;
         return {
             access_token: token,
-            user,
+            user: userWithoutPassword,
         };
     }
     async forgotPassword(email) {

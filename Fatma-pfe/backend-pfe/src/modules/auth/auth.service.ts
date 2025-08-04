@@ -46,10 +46,12 @@ export class AuthService {
 
     const token = this.jwtService.sign(payload);
 
-    return {
-      access_token: token,
-      user,
-    };
+   const { password: _, ...userWithoutPassword } = user;
+
+return {
+  access_token: token,
+  user: userWithoutPassword,
+};
   }
 
   // ✅ Envoi du lien de réinitialisation de mot de passe

@@ -1,4 +1,4 @@
-// ✅ FRONTEND - AdminPromotionsPage.js (React avec Axios + Toast)
+// ✅ FRONTEND - AdminPromotionsPage.js (corrigé avec titres champs)
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { FaToggleOn, FaToggleOff, FaPercent } from "react-icons/fa";
@@ -17,8 +17,8 @@ const AdminPromotionsPage = () => {
     dateDebut: "",
     dateFin: "",
   });
-const [currentPage, setCurrentPage] = useState(1);
-const promotionsPerPage = 10;
+  const [currentPage, setCurrentPage] = useState(1);
+  const promotionsPerPage = 10;
   const token = localStorage.getItem("token");
 
   const fetchPromotions = async () => {
@@ -45,7 +45,6 @@ const promotionsPerPage = 10;
   };
 
   const handleEdit = (promo) => {
-    console.log("edit", promo);
     setEditForm(promo);
     setIsEditing(true);
   };
@@ -115,12 +114,12 @@ const promotionsPerPage = 10;
     if (!token) toast.error("Token manquant. Veuillez vous reconnecter.");
     else fetchPromotions();
   }, []);
-const indexOfLast = currentPage * promotionsPerPage;
-const indexOfFirst = indexOfLast - promotionsPerPage;
-const currentPromotions = promotions.slice(indexOfFirst, indexOfLast);
-const totalPages = Math.ceil(promotions.length / promotionsPerPage);
-  console.log("AdminPromotionsPage loaded");
-  console.log("currentPromotions", currentPromotions);
+
+  const indexOfLast = currentPage * promotionsPerPage;
+  const indexOfFirst = indexOfLast - promotionsPerPage;
+  const currentPromotions = promotions.slice(indexOfFirst, indexOfLast);
+  const totalPages = Math.ceil(promotions.length / promotionsPerPage);
+
   return (
     <div className="p-8 bg-gradient-to-br from-gray-50 to-blue-50 min-h-screen font-[Inter]">
       <ToastContainer position="top-right" autoClose={3000} />
@@ -133,11 +132,26 @@ const totalPages = Math.ceil(promotions.length / promotionsPerPage);
         <div className="bg-white shadow-xl rounded-xl p-6 mb-8">
           <h3 className="font-semibold text-lg mb-4">Nouvelle Promotion</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <input name="titre" value={newPromo.titre} onChange={handleNewPromoChange} placeholder="Titre" className="border p-2 rounded w-full" />
-            <input name="tauxReduction" type="number" value={newPromo.tauxReduction} onChange={handleNewPromoChange} className="border p-2 rounded w-full" placeholder="Taux de réduction" />
-            <input name="dateDebut" type="date" value={newPromo.dateDebut} onChange={handleNewPromoChange} className="border p-2 rounded w-full" />
-            <input name="dateFin" type="date" value={newPromo.dateFin} onChange={handleNewPromoChange} className="border p-2 rounded w-full" />
-            <textarea name="description" value={newPromo.description} onChange={handleNewPromoChange} placeholder="Description" className="border p-2 rounded w-full md:col-span-2" />
+            <div>
+              <label className="text-sm font-semibold text-gray-700 mb-1 block">Titre *</label>
+              <input name="titre" value={newPromo.titre} onChange={handleNewPromoChange} placeholder="Titre" className="border p-2 rounded w-full" />
+            </div>
+            <div>
+              <label className="text-sm font-semibold text-gray-700 mb-1 block">Taux de réduction (%) *</label>
+              <input name="tauxReduction" type="number" value={newPromo.tauxReduction} onChange={handleNewPromoChange} className="border p-2 rounded w-full" />
+            </div>
+            <div>
+              <label className="text-sm font-semibold text-gray-700 mb-1 block">Date début *</label>
+              <input name="dateDebut" type="date" value={newPromo.dateDebut} onChange={handleNewPromoChange} className="border p-2 rounded w-full" />
+            </div>
+            <div>
+              <label className="text-sm font-semibold text-gray-700 mb-1 block">Date fin *</label>
+              <input name="dateFin" type="date" value={newPromo.dateFin} onChange={handleNewPromoChange} className="border p-2 rounded w-full" />
+            </div>
+            <div className="md:col-span-2">
+              <label className="text-sm font-semibold text-gray-700 mb-1 block">Description </label>
+              <textarea name="description" value={newPromo.description} onChange={handleNewPromoChange} placeholder="Description" className="border p-2 rounded w-full" />
+            </div>
           </div>
           <div className="flex justify-end mt-4">
             <button onClick={handleCreate} className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded font-semibold shadow">
@@ -169,17 +183,17 @@ const totalPages = Math.ceil(promotions.length / promotionsPerPage);
                   <td className="px-6 py-4">{new Date(promo.dateDebut).toLocaleDateString()}</td>
                   <td className="px-6 py-4">{new Date(promo.dateFin).toLocaleDateString()}</td>
                   <td className="px-6 py-4 text-center">
-                              <button
-              onClick={() => handleToggleStatus(promo.id)}
-              className={`px-3 py-1 text-sm font-semibold rounded-full ${
-                promo.isActive
-                  ? "bg-green-100 text-green-700 border border-green-400 hover:bg-green-200"
-                  : "bg-red-100 text-red-700 border border-red-400 hover:bg-red-200"
-              }`}
-            >
-              {promo.isActive ? "Active" : "Inactive"}
-            </button>
-                </td>
+                    <button
+                      onClick={() => handleToggleStatus(promo.id)}
+                      className={`px-3 py-1 text-sm font-semibold rounded-full ${
+                        promo.isActive
+                          ? "bg-green-100 text-green-700 border border-green-400 hover:bg-green-200"
+                          : "bg-red-100 text-red-700 border border-red-400 hover:bg-red-200"
+                      }`}
+                    >
+                      {promo.isActive ? "Active" : "Inactive"}
+                    </button>
+                  </td>
                   <td className="px-6 py-4 text-center">
                     <button
                       onClick={() => handleEdit(promo)}
@@ -193,54 +207,66 @@ const totalPages = Math.ceil(promotions.length / promotionsPerPage);
               ))}
             </tbody>
           </table>
+          {/* Pagination */}
           {promotions.length > 0 && (
-  <div className="flex items-center justify-between px-4 py-4 mt-4 bg-gray-50 border-t rounded-b-xl">
-    {/* ➤ Texte à gauche */}
-    <div className="text-sm text-gray-600">
-      {indexOfFirst + 1} – {Math.min(indexOfLast, promotions.length)} sur {promotions.length} promotions
-    </div>
-
-    {/* ➤ Pagination à droite */}
-    <div className="flex items-center gap-1">
-      <button
-        onClick={() => currentPage > 1 && setCurrentPage(currentPage - 1)}
-        disabled={currentPage === 1}
-        className="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
-      >
-        Précédent
-      </button>
-
-      {Array.from({ length: totalPages }, (_, i) => (
-        <button
-          key={i}
-          onClick={() => setCurrentPage(i + 1)}
-          className={`px-3 py-1 rounded ${currentPage === i + 1 ? "bg-indigo-600 text-white" : "bg-white border"}`}
-        >
-          {i + 1}
-        </button>
-      ))}
-
-      <button
-        onClick={() => currentPage < totalPages && setCurrentPage(currentPage + 1)}
-        disabled={currentPage === totalPages}
-        className="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
-      >
-        Suivant
-      </button>
-    </div>
-  </div>
-)}
+            <div className="flex items-center justify-between px-4 py-4 mt-4 bg-gray-50 border-t rounded-b-xl">
+              <div className="text-sm text-gray-600">
+                {indexOfFirst + 1} – {Math.min(indexOfLast, promotions.length)} sur {promotions.length} promotions
+              </div>
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={() => currentPage > 1 && setCurrentPage(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  className="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
+                >
+                  Précédent
+                </button>
+                {Array.from({ length: totalPages }, (_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setCurrentPage(i + 1)}
+                    className={`px-3 py-1 rounded ${currentPage === i + 1 ? "bg-indigo-600 text-white" : "bg-white border"}`}
+                  >
+                    {i + 1}
+                  </button>
+                ))}
+                <button
+                  onClick={() => currentPage < totalPages && setCurrentPage(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                  className="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50"
+                >
+                  Suivant
+                </button>
+              </div>
+            </div>
+          )}
         </div>
 
+        {/* Formulaire d’édition */}
         {isEditing && editForm && (
           <div className="mt-6 bg-white shadow-xl p-6 rounded-xl">
             <h3 className="font-semibold text-lg mb-4">Modifier Promotion</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <input name="titre" value={editForm.titre} onChange={handleChange} className="border p-2 rounded w-full" />
-              <input name="tauxReduction" type="number" value={editForm.tauxReduction} onChange={handleChange} className="border p-2 rounded w-full" />
-              <input name="dateDebut" type="date" value={editForm.dateDebut.split('T')[0]} onChange={handleChange} className="border p-2 rounded w-full" />
-              <input name="dateFin" type="date" value={editForm.dateFin.split('T')[0]} onChange={handleChange} className="border p-2 rounded w-full" />
-              <textarea name="description" value={editForm.description} onChange={handleChange} className="border p-2 rounded w-full md:col-span-2" />
+              <div>
+                <label className="text-sm font-semibold text-gray-700 mb-1 block">Titre *</label>
+                <input name="titre" value={editForm.titre} onChange={handleChange} className="border p-2 rounded w-full" />
+              </div>
+              <div>
+                <label className="text-sm font-semibold text-gray-700 mb-1 block">Taux de réduction (%) *</label>
+                <input name="tauxReduction" type="number" value={editForm.tauxReduction} onChange={handleChange} className="border p-2 rounded w-full" />
+              </div>
+              <div>
+                <label className="text-sm font-semibold text-gray-700 mb-1 block">Date début *</label>
+                <input name="dateDebut" type="date" value={editForm.dateDebut.split('T')[0]} onChange={handleChange} className="border p-2 rounded w-full" />
+              </div>
+              <div>
+                <label className="text-sm font-semibold text-gray-700 mb-1 block">Date fin *</label>
+                <input name="dateFin" type="date" value={editForm.dateFin.split('T')[0]} onChange={handleChange} className="border p-2 rounded w-full" />
+              </div>
+              <div className="md:col-span-2">
+                <label className="text-sm font-semibold text-gray-700 mb-1 block">Description </label>
+                <textarea name="description" value={editForm.description} onChange={handleChange} className="border p-2 rounded w-full" />
+              </div>
             </div>
             <div className="flex justify-end gap-2 mt-4">
               <button onClick={() => setIsEditing(false)} className="px-4 py-2 text-gray-600">Annuler</button>

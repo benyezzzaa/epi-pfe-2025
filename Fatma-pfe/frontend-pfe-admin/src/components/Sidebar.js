@@ -48,15 +48,13 @@ const Sidebar = ({ onClose }) => {
         >
           <FaReceipt /> Dashboard
         </NavLink>
-        
         <NavLink 
-          to="/products" 
+          to="/ai-predictions" 
           onClick={handleNavClick}
           className={({ isActive }) => `flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 text-sm lg:text-base ${isActive ? "bg-blue-600 text-white" : "hover:bg-blue-500 hover:text-white"}` }
         >
-          <FaBoxOpen /> Produits
+          <FaBrain /> AI Predictions
         </NavLink>
-        
         <NavLink 
           to="/users" 
           onClick={handleNavClick}
@@ -64,7 +62,41 @@ const Sidebar = ({ onClose }) => {
         >
           <FaUsers /> Utilisateurs
         </NavLink>
-        
+  <NavLink 
+          to="/map-commercials" 
+          onClick={handleNavClick}
+          className={({ isActive }) => `flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 text-sm lg:text-base ${isActive ? "bg-blue-600 text-white" : "hover:bg-blue-500 hover:text-white"}` }
+        >
+          <FaTruck /> Carte Commerciaux
+        </NavLink>
+        <NavLink 
+          to="/objectifs" 
+          onClick={handleNavClick}
+          className={({ isActive }) => `flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 text-sm lg:text-base ${isActive ? "bg-blue-600 text-white" : "hover:bg-blue-500 hover:text-white"}` }
+        >
+          <FaBalanceScale /> Objectifs commerciaux
+        </NavLink>
+        <NavLink 
+          to="/products" 
+          onClick={handleNavClick}
+          className={({ isActive }) => `flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 text-sm lg:text-base ${isActive ? "bg-blue-600 text-white" : "hover:bg-blue-500 hover:text-white"}` }
+        >
+          <FaBoxOpen /> Produits
+        </NavLink>
+<NavLink 
+          to="/categories" 
+          onClick={handleNavClick}
+          className={({ isActive }) => `flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 text-sm lg:text-base ${isActive ? "bg-blue-600 text-white" : "hover:bg-blue-500 hover:text-white"}` }
+        >
+          <FaTags /> Gestion des Catégories
+        </NavLink>
+        <NavLink 
+          to="/units" 
+          onClick={handleNavClick}
+          className={({ isActive }) => `flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 text-sm lg:text-base ${isActive ? "bg-blue-600 text-white" : "hover:bg-blue-500 hover:text-white"}` }
+        >
+          <FaBalanceScale /> Gestion des Unités
+        </NavLink>
         <NavLink 
           to="/orders" 
           onClick={handleNavClick}
@@ -147,13 +179,7 @@ const Sidebar = ({ onClose }) => {
           )}
         </div>
         
-        <NavLink 
-          to="/objectifs" 
-          onClick={handleNavClick}
-          className={({ isActive }) => `flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 text-sm lg:text-base ${isActive ? "bg-blue-600 text-white" : "hover:bg-blue-500 hover:text-white"}` }
-        >
-          <FaBalanceScale /> Objectifs commerciaux
-        </NavLink>
+        
         
         <NavLink 
           to="/promotions" 
@@ -163,21 +189,9 @@ const Sidebar = ({ onClose }) => {
           <FaTags /> Promotions
         </NavLink>
         
-        <NavLink 
-          to="/units" 
-          onClick={handleNavClick}
-          className={({ isActive }) => `flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 text-sm lg:text-base ${isActive ? "bg-blue-600 text-white" : "hover:bg-blue-500 hover:text-white"}` }
-        >
-          <FaBalanceScale /> Gestion des Unités
-        </NavLink>
         
-        <NavLink 
-          to="/categories" 
-          onClick={handleNavClick}
-          className={({ isActive }) => `flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 text-sm lg:text-base ${isActive ? "bg-blue-600 text-white" : "hover:bg-blue-500 hover:text-white"}` }
-        >
-          <FaTags /> Gestion des Catégories
-        </NavLink>
+        
+        
         
         <NavLink 
           to="/satisfaction" 
@@ -195,21 +209,9 @@ const Sidebar = ({ onClose }) => {
           <FaExclamationTriangle /> Réclamations
         </NavLink>
         
-        <NavLink 
-          to="/map-commercials" 
-          onClick={handleNavClick}
-          className={({ isActive }) => `flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 text-sm lg:text-base ${isActive ? "bg-blue-600 text-white" : "hover:bg-blue-500 hover:text-white"}` }
-        >
-          <FaTruck /> Carte Commerciaux
-        </NavLink>
+      
         
-        <NavLink 
-          to="/ai-predictions" 
-          onClick={handleNavClick}
-          className={({ isActive }) => `flex items-center gap-2 px-4 py-2 rounded-lg transition-all duration-200 text-sm lg:text-base ${isActive ? "bg-blue-600 text-white" : "hover:bg-blue-500 hover:text-white"}` }
-        >
-          <FaBrain /> AI Predictions
-        </NavLink>
+        
       </nav>
     </div>
   );

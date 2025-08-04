@@ -7,7 +7,21 @@ export declare class AuthController {
     constructor(authService: AuthService);
     login(loginUserDto: LoginUserDto): Promise<{
         access_token: string;
-        user: import("../users/users.entity").User;
+        user: {
+            id: number;
+            nom: string;
+            adresse: string;
+            prenom: string;
+            email: string;
+            tel: string;
+            role: string;
+            latitude: number;
+            longitude: number;
+            isActive: boolean;
+            clients: import("../client/client.entity").Client[];
+            visites: import("../Visite/visite.entity").Visite[];
+            commandes: import("../commande/commande.entity").Commande[];
+        };
     }>;
     forgotPassword(dto: ForgotPasswordDto): Promise<{
         message: string;

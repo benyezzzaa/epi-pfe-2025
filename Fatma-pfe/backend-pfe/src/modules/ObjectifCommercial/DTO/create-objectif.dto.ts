@@ -2,7 +2,8 @@
 import { IsNotEmpty, IsNumber, IsOptional, IsDateString } from 'class-validator';
 
 export class CreateObjectifDto {
-  @IsOptional()
+  @IsNotEmpty()
+  @IsNumber()
   commercialId?: number;
 
   @IsNumber()

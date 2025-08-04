@@ -21,7 +21,8 @@ class CreateObjectifDto {
 }
 exports.CreateObjectifDto = CreateObjectifDto;
 __decorate([
-    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
 ], CreateObjectifDto.prototype, "commercialId", void 0);
 __decorate([

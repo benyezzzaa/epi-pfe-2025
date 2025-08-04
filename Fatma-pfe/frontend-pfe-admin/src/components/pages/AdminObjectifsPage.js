@@ -15,7 +15,7 @@ const AdminObjectifsPage = () => {
     montantCible: "",
     prime: "",
     mission: "",
-    isActive: true,
+    
   });
 const [currentPage, setCurrentPage] = useState(1);
 const itemsPerPage = 5; // Nombre d'objectifs par page
@@ -93,26 +93,44 @@ const goToPage = (page) => {
   }, []);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    const numericFields = ["montantCible", "prime"];
+  const { name, value } = e.target;
+
+  if (name === "commercialId") {
     setForm({
       ...form,
-      [name]: numericFields.includes(name)
-        ? value === "" ? "" : Number(value)
-        : value,
+      [name]: value === "" ? "" : Number(value),
     });
-  };
+  } else if (["montantCible", "prime"].includes(name)) {
+    setForm({
+      ...form,
+      [name]: value === "" ? "" : Number(value),
+    });
+  } else {
+    setForm({
+      ...form,
+      [name]: value,
+    });
+  }
+};
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      await axios.post(`${API_BASE}/objectifs`, form, headers);
-      fetchObjectifs();
-      alert("✅ Objectif ajouté !");
-    } catch (err) {
-      alert("Erreur ajout objectif : " + err.response?.data?.message);
-    }
-  };
+  e.preventDefault();
+
+  // ✅ Validation obligatoire ici
+  if (!form.commercialId) {
+    alert("❌ Veuillez choisir un commercial avant d'ajouter l'objectif.");
+    return;
+  }
+
+  try {
+    console.log("🚀 Payload à envoyer :", form);  // pour vérification
+    await axios.post(`${API_BASE}/objectifs`, form, headers);
+    fetchObjectifs();
+    alert("✅ Objectif ajouté !");
+  } catch (err) {
+    alert("Erreur ajout objectif : " + err.response?.data?.message);
+  }
+};
 
   const handleToggleStatus = async (id) => {
     try {
@@ -143,7 +161,7 @@ const goToPage = (page) => {
           >
             <option value="">-- Choisir --</option>
             {commercials.map((c) => (
-              <option key={c.id} value={c.id}>
+              <option key={c.id} value={String(c.id)}>
                 {c.nom} {c.prenom}
               </option>
             ))}

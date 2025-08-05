@@ -44,6 +44,15 @@ const AiPredictions = () => {
       setLoading(true);
       const response = await axios.get(`http://localhost:4000/api/ai-predictions/predict?top_n=${topN}`);
       console.log('API Response:', response.data);
+      
+      // Debug: Check expected commandes data
+      if (response.data?.data?.data?.expected_commandes) {
+        console.log('Expected Commandes Data:', response.data.data.data.expected_commandes);
+        console.log('Total Commandes:', response.data.data.data.expected_commandes.total_commandes);
+        console.log('Previous Month:', response.data.data.data.expected_commandes.previous_month_commandes);
+        console.log('Expected:', response.data.data.data.expected_commandes.expected_commandes);
+      }
+      
       setPredictions(response.data);
       setError(null);
     } catch (error) {
@@ -80,7 +89,7 @@ const AiPredictions = () => {
       datasets: [
         {
           label: 'Ventes Prédites',
-          data: products.map(p => p.predicted_sales || 0),
+          data: products.map(p => parseFloat(p.predicted_sales) || 0),
           backgroundColor: 'rgba(54, 162, 235, 0.8)',
           borderColor: 'rgba(54, 162, 235, 1)',
           borderWidth: 1,
@@ -101,7 +110,7 @@ const AiPredictions = () => {
       datasets: [
         {
           label: 'Ventes Prédites',
-          data: categories.map(c => c.predicted_sales || 0),
+          data: categories.map(c => parseFloat(c.predicted_sales) || 0),
           backgroundColor: 'rgba(255, 159, 64, 0.8)',
           borderColor: 'rgba(255, 159, 64, 1)',
           borderWidth: 1,
@@ -118,10 +127,10 @@ const AiPredictions = () => {
     const expectedCommandes = predictions.data.data.expected_commandes;
     
     return {
-      labels: ['Commandes Attendues', 'Commandes Historiques'],
+      labels: ['Commandes Attendues', 'Mois Précédent'],
       datasets: [
         {
-          data: [expectedCommandes.expected_commandes || 0, expectedCommandes.historical_commandes || 0],
+          data: [expectedCommandes.expected_commandes || 0, expectedCommandes.previous_month_commandes || 0],
           backgroundColor: [
             'rgba(75, 192, 192, 0.8)',
             'rgba(201, 203, 207, 0.8)',
@@ -218,21 +227,19 @@ const AiPredictions = () => {
                 <table className="min-w-full">
                   <thead>
                     <tr className="bg-gray-50">
-                      <th className="px-4 py-2 text-left">Produit</th>
-                      <th className="px-4 py-2 text-left">Ventes Prédites</th>
-                      <th className="px-4 py-2 text-left">Prix (TTC)</th>
-                      <th className="px-4 py-2 text-left">Commandes Historiques</th>
+                                             <th className="px-4 py-2 text-left">Produit</th>
+                       <th className="px-4 py-2 text-left">Ventes Prédites</th>
+                       <th className="px-4 py-2 text-left">Prix (TTC)</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {predictions.data.data.top_products.map((product, index) => (
-                      <tr key={index} className="border-b">
-                        <td className="px-4 py-2">{product.product_name}</td>
-                        <td className="px-4 py-2 font-medium">{product.predicted_sales}</td>
-                        <td className="px-4 py-2">{product.current_price_ttc} Euro</td>
-                        <td className="px-4 py-2">{product.historical_orders}</td>
-                      </tr>
-                    ))}
+                                         {predictions.data.data.top_products.map((product, index) => (
+                       <tr key={index} className="border-b">
+                         <td className="px-4 py-2">{product.product_name}</td>
+                         <td className="px-4 py-2 font-medium">{product.predicted_sales.toFixed(2)}</td>
+                         <td className="px-4 py-2">{product.current_price_ttc.toFixed(2)} €</td>
+                       </tr>
+                     ))}
                   </tbody>
                 </table>
               </div>
@@ -279,19 +286,17 @@ const AiPredictions = () => {
                 <table className="min-w-full">
                   <thead>
                     <tr className="bg-gray-50">
-                      <th className="px-4 py-2 text-left">Catégorie</th>
-                      <th className="px-4 py-2 text-left">Ventes Prédites</th>
-                      <th className="px-4 py-2 text-left">Commandes Historiques</th>
+                                             <th className="px-4 py-2 text-left">Catégorie</th>
+                       <th className="px-4 py-2 text-left">Ventes Prédites</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {predictions.data.data.top_categories.map((category, index) => (
-                      <tr key={index} className="border-b">
-                        <td className="px-4 py-2">{category.category_name}</td>
-                        <td className="px-4 py-2 font-medium">{category.predicted_sales}</td>
-                        <td className="px-4 py-2">{category.historical_orders}</td>
-                      </tr>
-                    ))}
+                                         {predictions.data.data.top_categories.map((category, index) => (
+                       <tr key={index} className="border-b">
+                         <td className="px-4 py-2">{category.category_name}</td>
+                         <td className="px-4 py-2 font-medium">{category.predicted_sales.toFixed(2)}</td>
+                       </tr>
+                     ))}
                   </tbody>
                 </table>
               </div>
@@ -318,10 +323,10 @@ const AiPredictions = () => {
                       legend: {
                         position: 'top',
                       },
-                      title: {
-                        display: true,
-                        text: 'Commandes Attendues vs Historiques',
-                      },
+                                             title: {
+                         display: true,
+                         text: 'Commandes Attendues vs Mois Précédent',
+                       },
                     },
                   }}
                 />
@@ -337,23 +342,24 @@ const AiPredictions = () => {
                   </span>
                 </div>
                 <div className="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
-                  <span className="font-medium">Total des Commandes Historiques:</span>
+                  <span className="font-medium">Total des Commandes:</span>
                   <span className="text-xl font-semibold text-gray-600">
-                    {predictions.data.data.expected_commandes.historical_commandes}
+                    {predictions.data.data.expected_commandes.total_commandes}
                   </span>
                 </div>
                 <div className="flex justify-between items-center p-4 bg-green-50 rounded-lg">
-                  <span className="font-medium">Moyenne Mensuelle des Commandes:</span>
+                  <span className="font-medium">Commandes du Mois Précédent:</span>
                   <span className="text-lg font-semibold text-green-600">
-                    {predictions.data.data.expected_commandes.avg_monthly_commandes}
+                    {predictions.data.data.expected_commandes.previous_month_commandes}
                   </span>
                 </div>
-                <div className="flex justify-between items-center p-4 bg-yellow-50 rounded-lg">
-                  <span className="font-medium">Taux de Croissance:</span>
-                  <span className="text-lg font-semibold text-yellow-600">
-                    {(predictions.data.data.expected_commandes.growth_rate * 100).toFixed(1)}%
-                  </span>
-                </div>
+                                 <div className="flex justify-between items-center p-4 bg-yellow-50 rounded-lg">
+                   <span className="font-medium">Taux de Croissance (vs Mois Précédent):</span>
+                   <span className="text-lg font-semibold text-yellow-600">
+                     {predictions.data.data.expected_commandes.growth_rate.toFixed(2)}%
+                   </span>
+                 </div>
+
               </div>
             </div>
           </div>
@@ -375,4 +381,4 @@ const AiPredictions = () => {
   );
 };
 
-export default AiPredictions; 
+export default AiPredictions;

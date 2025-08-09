@@ -8,6 +8,9 @@ on:
 jobs:
   run-dev:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend-pfe
     steps:
       - name: Checkout
         uses: actions/checkout@v4

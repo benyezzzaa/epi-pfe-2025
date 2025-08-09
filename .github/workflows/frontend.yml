@@ -8,6 +8,9 @@ on:
 jobs:
   run-start:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend-pfe-admin
     steps:
       - name: Checkout
         uses: actions/checkout@v4

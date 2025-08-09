@@ -8,6 +8,9 @@ on:
 jobs:
   run-uvicorn:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ai-prediction-service
     steps:
       - name: Checkout
         uses: actions/checkout@v4

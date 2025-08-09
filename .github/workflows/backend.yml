@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: backend-pfe
+        working-directory: Fatma-pfe/backend-pfe
     steps:
       - name: Checkout
         uses: actions/checkout@v4

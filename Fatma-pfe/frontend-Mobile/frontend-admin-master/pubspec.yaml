@@ -63,7 +63,7 @@ dependencies:
   url_launcher: ^6.3.1
   google_mlkit_text_recognition: ^0.15.0
   image_picker: ^1.1.2
-  mobile_scanner: ^6.0.1
+  mobile_scanner: ^7.0.1
   geocoding: ^2.2.0
   
 dev_dependencies:
@@ -75,7 +75,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^4.0.0
+  flutter_lints: ^5.0.0
 
 flutter_icons:
   android: true

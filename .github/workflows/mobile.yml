@@ -26,14 +26,39 @@ jobs:
         with:
           channel: stable
 
+      - name: Locate Flutter app
+        id: locate
+        shell: bash
+        run: |
+          echo "Repo root: $(pwd)"
+          echo "---- search pubspec.yaml (depth<=4) ----"
+          APP_DIR=$(git ls-files '**/pubspec.yaml' | head -n1 | xargs -I{} dirname "{}")
+          if [ -z "$APP_DIR" ]; then
+            # fallback: scan manuellement
+            APP_DIR=$(find . -maxdepth 4 -type f -name pubspec.yaml -print | head -n1 | xargs -I{} dirname "{}")
+          fi
+          if [ -z "$APP_DIR" ]; then
+            echo "No pubspec.yaml found"; exit 1
+          fi
+          echo "APP_DIR=$APP_DIR" | tee -a $GITHUB_ENV
+          echo "Detected APP_DIR=$APP_DIR"
+
+      - name: Show tree
+        run: |
+          ls -la
+          echo "---- APP_DIR ----"
+          ls -la "$APP_DIR"
+
       - name: Flutter pub get
         run: flutter pub get
+        working-directory: ${{ env.APP_DIR }}
 
       - name: Build APK
         run: flutter build apk --release
+        working-directory: ${{ env.APP_DIR }}
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: apk
-          path: build/app/outputs/flutter-apk/*.apk
+          path: ${{ env.APP_DIR }}/build/app/outputs/flutter-apk/*.apk

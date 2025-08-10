@@ -1,3 +1,5 @@
 Fatma-pfe/frontend-Mobile/frontend-admin-master/build/
 *.apk
 **/outputs/**
+Fatma-pfe/frontend-Mobile/frontend-admin-master/.dart_tool/
+Fatma-pfe/frontend-Mobile/frontend-admin-master/build/

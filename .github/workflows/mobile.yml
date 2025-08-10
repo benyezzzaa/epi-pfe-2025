@@ -1,4 +1,5 @@
 name: mobile
+
 on:
   push:
     branches: [ main ]
@@ -7,14 +8,21 @@ on:
 jobs:
   build-apk:
     runs-on: ubuntu-latest
+
+    # APPLY working dir to every `run:` in this job
+    defaults:
+      run:
+        working-directory: Fatma-pfe/frontend-Mobile/frontend-admin-master
+        shell: bash
+
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Flutter 3.22.2 (Dart >= 3.7)
+      - name: Setup Flutter 3.29.3 (Dart >= 3.7)
         uses: subosito/flutter-action@v2
         with:
           channel: stable
-          flutter-version: '3.22.2'
+          flutter-version: '3.29.3'
           cache: false
 
       - name: Show toolchain
@@ -23,15 +31,14 @@ jobs:
           dart --version
 
       - name: Pub get
-        working-directory: Fatma-pfe/frontend-Mobile/frontend-admin-master
         run: flutter pub get
 
-      - name: Build APK
-        working-directory: Fatma-pfe/frontend-Mobile/frontend-admin-master
+      - name: Build APK (release)
         run: flutter build apk --release
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: apk
+          # keep full path because `uses:` steps ignore defaults.run
           path: Fatma-pfe/frontend-Mobile/frontend-admin-master/build/app/outputs/flutter-apk/*.apk

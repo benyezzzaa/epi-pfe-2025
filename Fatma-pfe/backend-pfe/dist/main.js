@@ -9,10 +9,12 @@ const common_1 = require("@nestjs/common");
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
     app.enableCors({
-        origin: 'http://localhost:3000',
+        origin: true,
         methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-        allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+        allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'Origin', 'X-Requested-With'],
         credentials: true,
+        preflightContinue: false,
+        optionsSuccessStatus: 204
     });
     app.useGlobalPipes(new common_1.ValidationPipe({
         whitelist: true,
@@ -31,7 +33,7 @@ async function bootstrap() {
     const document = swagger_1.SwaggerModule.createDocument(app, config);
     swagger_1.SwaggerModule.setup('api', app, document);
     await app.listen(4000, '0.0.0.0');
-    console.log('🚀 Swagger disponible sur http://localhost:4000/api');
+    console.log('🚀 Swagger disponible sur http://localhost:5000/api');
 }
 bootstrap();
 //# sourceMappingURL=main.js.map

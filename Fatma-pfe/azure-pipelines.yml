@@ -1,0 +1,85 @@
+trigger:
+- main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  dockerComposeFile: 'docker-compose.yml'
+  imageRepository: 'fatma-pfe'
+  containerRegistry: 'your-registry.azurecr.io'
+
+stages:
+- stage: Build
+  displayName: 'Build and Test'
+  jobs:
+  - job: Build
+    displayName: 'Build Application'
+    steps:
+    - task: NodeTool@0
+      inputs:
+        versionSpec: '18.x'
+      displayName: 'Install Node.js'
+
+    - task: UsePythonVersion@0
+      inputs:
+        versionSpec: '3.11'
+      displayName: 'Install Python'
+
+    - script: |
+        docker --version
+        docker-compose --version
+      displayName: 'Check Docker'
+
+    - script: |
+        cd backend-pfe
+        npm install
+        npm run build
+      displayName: 'Build Backend'
+
+    - script: |
+        cd frontend-pfe-admin
+        npm install
+        npm run build
+      displayName: 'Build Frontend'
+
+    - script: |
+        cd ai-prediction-service
+        pip install -r requirements.txt
+      displayName: 'Install AI Dependencies'
+
+    - script: |
+        docker-compose -f $(dockerComposeFile) build
+      displayName: 'Build Docker Images'
+
+- stage: Test
+  displayName: 'Test'
+  dependsOn: Build
+  jobs:
+  - job: Test
+    displayName: 'Run Tests'
+    steps:
+    - script: |
+        cd backend-pfe
+        npm test
+      displayName: 'Backend Tests'
+
+    - script: |
+        cd frontend-pfe-admin
+        npm test -- --watchAll=false
+      displayName: 'Frontend Tests'
+
+- stage: Deploy
+  displayName: 'Deploy'
+  dependsOn: Test
+  jobs:
+  - deployment: Deploy
+    displayName: 'Deploy to Production'
+    environment: 'production'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - script: |
+              docker-compose -f $(dockerComposeFile) up -d
+            displayName: 'Deploy with Docker Compose' 

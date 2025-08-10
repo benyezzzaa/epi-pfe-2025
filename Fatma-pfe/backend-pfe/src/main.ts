@@ -8,12 +8,14 @@ import { json } from 'express';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // ✅ CORS uniquement avec enableCors
+  // ✅ CORS pour développement et production
   app.enableCors({
-    origin: 'http://localhost:3000',
+    origin: true, // Permet toutes les origines en développement
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'Origin', 'X-Requested-With'],
     credentials: true,
+    preflightContinue: false,
+    optionsSuccessStatus: 204
   });
 
 
@@ -45,7 +47,7 @@ async function bootstrap() {
 
   await app.listen(4000, '0.0.0.0');
   
-  console.log('🚀 Swagger disponible sur http://localhost:4000/api');
+  console.log('🚀 Swagger disponible sur http://localhost:5000/api');
 }
 
 bootstrap();

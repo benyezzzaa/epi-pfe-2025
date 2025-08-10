@@ -3,8 +3,12 @@
 import axios from "axios";
 
 const instance = axios.create({
-  baseURL: "http://localhost:4000", // ton backend NestJS
-  
+  baseURL: "http://localhost:4000", // URL directe du backend
+  withCredentials: true,
+  headers: {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json',
+  }
 });
 
 instance.interceptors.request.use((config) => {

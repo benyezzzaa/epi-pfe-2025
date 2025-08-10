@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend-pfe
+    ports:
+      - "4000:4000"
+    depends_on:
+      - ia
+      - db-1
+    environment:
+      DATABASE_HOST: db-1
+      DATABASE_PORT: 5432
+      DATABASE_USER: postgres
+      DATABASE_PASSWORD: fatma
+      DATABASE_NAME: postgres
+    networks:
+      - app-network
+
+  frontend:
+    build: ./frontend-pfe-admin
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+    networks:
+      - app-network
+    environment:
+      - REACT_APP_API_URL=http://localhost:4000
+
+  ia:
+    build: ./ai-prediction-service
+    ports:
+      - "8000:8000"
+    networks:
+      - app-network
+  db-1:
+    image: postgres:17
+    container_name: db-1
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: fatma
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+       - ./db/init:/docker-entrypoint-initdb.d
+  # pour charger les scripts au 1er démarrage
+       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+
+volumes:
+  postgres_data:
+
+networks:
+  app-network:
+    driver: bridge
+

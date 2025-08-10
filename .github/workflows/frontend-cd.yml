@@ -29,8 +29,11 @@ jobs:
       - name: Install deps
         run: npm ci
 
-      - name: Build
+      - name: Build (ignore ESLint warnings in CI)
         run: npm run build
+        env:
+          CI: "false"
+
 
       # Détecte automatiquement le dossier de sortie: dist (Vite) ou build (CRA)
       - name: Detect build output

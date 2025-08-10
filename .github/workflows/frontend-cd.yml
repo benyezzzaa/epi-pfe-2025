@@ -1,0 +1,66 @@
+name: Frontend CD (S3 + CloudFront)
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'Fatma-pfe/frontend-pfe-admin/**'
+      - '.github/workflows/frontend-cd.yml'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: Fatma-pfe/frontend-pfe-admin
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: npm
+          cache-dependency-path: Fatma-pfe/frontend-pfe-admin/package-lock.json
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      # Détecte automatiquement le dossier de sortie: dist (Vite) ou build (CRA)
+      - name: Detect build output
+        id: out
+        run: |
+          if [ -d dist ]; then echo "dir=dist" >> $GITHUB_OUTPUT;
+          elif [ -d build ]; then echo "dir=build" >> $GITHUB_OUTPUT;
+          else echo "Aucun dossier de build trouvé (dist/build)"; exit 1; fi
+
+      - name: Configure AWS
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Sync static assets to S3
+        run: |
+          aws s3 sync "./${{ steps.out.outputs.dir }}" "s3://${{ secrets.S3_BUCKET }}" \
+            --delete \
+            --exclude "index.html" \
+            --cache-control "public, max-age=31536000, immutable"
+
+      - name: Upload index.html (no-cache)
+        run: |
+          aws s3 cp "./${{ steps.out.outputs.dir }}/index.html" "s3://${{ secrets.S3_BUCKET }}/index.html" \
+            --cache-control "no-cache, no-store, must-revalidate"
+
+      - name: Invalidate CloudFront
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id "${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}" \
+            --paths "/*"

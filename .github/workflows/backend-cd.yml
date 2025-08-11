@@ -1,0 +1,34 @@
+name: Backend CD (Self-hosted)
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'Fatma-pfe/backend-pfe/**'
+      - '.github/workflows/backend-cd.yml'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: npm
+          cache-dependency-path: Fatma-pfe/backend-pfe/package-lock.json
+
+      - name: Build backend
+        working-directory: Fatma-pfe/backend-pfe
+        run: |
+          npm ci
+          npm run build
+
+      - name: Reload with PM2
+        working-directory: Fatma-pfe/backend-pfe
+        run: |
+          pm2 startOrReload ecosystem.config.js --env production || pm2 start ecosystem.config.js --env production
+          pm2 save

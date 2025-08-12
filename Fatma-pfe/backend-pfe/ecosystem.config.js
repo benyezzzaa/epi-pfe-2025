@@ -5,6 +5,6 @@ module.exports = {
     cwd: __dirname,
     instances: 1,
     autorestart: true,
-    env: { NODE_ENV: 'production', PORT: 3000 }
+    env: { NODE_ENV: 'production', PORT: 4000 }
   }]
 };

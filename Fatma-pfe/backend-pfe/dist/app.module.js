@@ -56,7 +56,7 @@ exports.AppModule = AppModule = __decorate([
                 host: process.env.DATABASE_HOST || 'localhost',
                 port: process.env.DATABASE_PORT ? parseInt(process.env.DATABASE_PORT, 10) : 5432,
                 username: process.env.DATABASE_USER || 'postgres',
-                password: process.env.DATABASE_PASSWORD || 'fatma',
+                password: process.env.DATABASE_PASSWORD || 'NouveauMotDePasse',
                 database: process.env.DATABASE_NAME || 'postgres',
                 autoLoadEntities: true,
                 synchronize: true,
